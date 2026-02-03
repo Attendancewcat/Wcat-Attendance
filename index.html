@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>📚 Smart Attendance System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .login-screen {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        
+        .login-screen h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:active { transform: scale(0.98); }
+        .login-admin { background: #667eea; color: white; }
+        .login-instructor { background: #48bb78; color: white; }
+        
+        .pin-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin: 15px 0;
+            outline: none;
+        }
+        
+        .pin-input:focus { border-color: #667eea; }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 20px 20px 10px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .user-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .breadcrumb {
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .breadcrumb span {
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 15px;
+        }
+        
+        .date-display {
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .stat-box { text-align: center; }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+        }
+        
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        input[type="text"], input[type="date"], select, textarea {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            background: white;
+            min-width: 120px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus { border-color: #667eea; }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        
+        button:active { transform: scale(0.95); }
+        
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #48bb78; color: white; }
+        .btn-danger { background: #f56565; color: white; }
+        .btn-warning { background: #ed8936; color: white; }
+        .btn-secondary { background: #e2e8f0; color: #4a5568; }
+        .btn-info { background: #4299e1; color: white; }
+        .btn-dark { background: #2d3748; color: white; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .card-list {
+            background: white;
+            border-radius: 10px 10px 20px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .card-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        
+        .card-item:last-child { border-bottom: none; }
+        .card-item:hover { background: #f8f9fa; }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .instructor-icon { background: #e0e7ff; color: #4c51bf; }
+        .subject-icon { background: #c6f6d5; color: #22543d; }
+        .batch-icon { background: #feebc8; color: #744210; }
+        .student-icon { background: #e9d8fd; color: #553c9a; }
+        
+        .card-info { flex: 1; min-width: 0; }
+        
+        .card-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .card-subtitle {
+            font-size: 13px;
+            color: #718096;
+        }
+        
+        .card-arrow {
+            font-size: 20px;
+            color: #cbd5e0;
+            margin-left: 10px;
+        }
+        
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+            position: relative;
+        }
+        
+        .student-item:last-child { border-bottom: none; }
+        .student-item:hover { background: #f8f9fa; }
+        
+        .student-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            margin-right: 10px;
+        }
+        
+        .student-name-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            font-size: 17px;
+            color: #2d3748;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .percentage-badge {
+            font-weight: bold;
+            font-size: 15px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: 10px;
+            min-width: 55px;
+            text-align: center;
+        }
+        
+        .percentage-high { background: #c6f6d5; color: #22543d; }
+        .percentage-medium { background: #feebc8; color: #744210; }
+        .percentage-low { background: #fed7d7; color: #742a2a; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-high { background: #48bb78; }
+        .progress-medium { background: #ed8936; }
+        .progress-low { background: #f56565; }
+        
+        .student-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3px;
+        }
+        
+        .student-id { font-size: 12px; color: #a0aec0; }
+        
+        .attendance-count {
+            font-size: 11px;
+            color: #718096;
+            font-weight: 500;
+        }
+        
+        .status-buttons {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        
+        .status-btn {
+            width: 42px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+            background: #f7fafc;
+            flex-shrink: 0;
+        }
+        
+        .status-btn.present { color: #48bb78; }
+        .status-btn.present.active { background: #48bb78; color: white; border-color: #2f855a; }
+        .status-btn.absent { color: #f56565; }
+        .status-btn.absent.active { background: #f56565; color: white; border-color: #c53030; }
+        .status-btn.late { color: #ed8936; }
+        .status-btn.late.active { background: #ed8936; color: white; border-color: #c05621; }
+        
+        .delete-student-btn {
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+        }
+        
+        .back-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        
+        .logout-btn {
+            background: #f56565;
+            color: white;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .section-title {
+            background: #f7fafc;
+            padding: 12px 15px;
+            font-weight: 700;
+            color: #4a5568;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .legend {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            font-size: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+        
+        .share-box {
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .share-url {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 10px 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #718096;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .import-section {
+            background: #fffaf0;
+            border: 2px dashed #ed8936;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .hidden { display: none !important; }
+        
+        .delete-btn {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 8px 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .share-btn {
+            background: #4299e1;
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active { display: flex; }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header { margin-bottom: 20px; }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .export-area {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 11px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .admin-card:hover { transform: translateY(-5px); }
+        
+        .admin-card-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .admin-card-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .admin-card-desc {
+            font-size: 13px;
+            color: #718096;
+        }
+        
+        .date-range-display {
+            background: #667eea;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .summary-label {
+            color: #718096;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .swipe-actions {
+            display: flex;
+            gap: 5px;
+            margin-left: 10px;
+        }
+        
+        .swipe-btn {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+        
+        @media (max-width: 480px) {
+            .status-btn { width: 38px; height: 34px; font-size: 14px; }
+            .student-name { font-size: 15px; }
+            .percentage-badge { font-size: 13px; padding: 3px 8px; min-width: 50px; }
+            .card-title { font-size: 16px; }
+            .login-screen { margin: 20px auto; padding: 30px 20px; }
+            .input-group { flex-direction: column; }
+            .input-group input, .input-group select { width: 100%; }
+            
+            .student-item {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .student-info {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .status-buttons {
+                order: 3;
+                margin-left: auto;
+            }
+            
+            .delete-student-btn {
+                order: 4;
+                margin-left: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div style="font-size: 60px; margin-bottom: 10px;">📚</div>
+        <h1>Attendance System</h1>
+        <p style="color: #718096; margin-bottom: 30px;">Select your role to continue</p>
+        
+        <button class="login-btn login-admin" onclick="showAdminLogin()">
+            👨‍💼 Admin Login
+        </button>
+        
+        <div id="adminPinSection" style="display: none;">
+            <input type="password" id="adminPin" class="pin-input" placeholder="0000" maxlength="4">
+            <button class="login-btn login-admin" onclick="loginAdmin()">Enter</button>
+        </div>
+        
+        <button class="login-btn login-instructor" onclick="showInstructorLogin()">
+            👨‍🏫 Instructor Login
+        </button>
+        
+        <div id="instructorSelectSection" style="display: none; margin-top: 20px;">
+            <select id="instructorSelect" style="width: 100%; margin-bottom: 10px;">
+                <option value="">Select Instructor</option>
+            </select>
+            <input type="password" id="instructorPin" class="pin-input" placeholder="PIN" maxlength="4">
+            <button class="login-btn login-instructor" onclick="loginInstructor()">Login</button>
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+            <p style="font-size: 12px; color: #a0aec0;">
+                💡 <strong>Default Admin PIN:</strong> 1234
+            </p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="container hidden">
+        <div class="header">
+            <div class="user-badge" id="userBadge">Admin</div>
+            <h1 id="pageTitle">📚 Smart Attendance</h1>
+            <div class="breadcrumb" id="breadcrumb">
+                <span>Dashboard</span>
+            </div>
+            <div class="date-display" id="currentDate"></div>
+            <div class="stats" id="statsBar" style="display: none;">
+                <div class="stat-box">
+                    <div class="stat-number" id="countPresent">0</div>
+                    <div class="stat-label">Present</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="countAbsent">0</div>
+                    <div class="stat-label">Absent</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="countLate">0</div>
+                    <div class="stat-label">Late</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="countTotal">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend" id="legend" style="display: none;">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #48bb78;"></div>
+                <span>Good (>80%)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ed8936;"></div>
+                <span>Average (60-80%)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f56565;"></div>
+                <span>At Risk (<60%)</span>
+            </div>
+        </div>
+        
+        <div class="controls" id="controls"></div>
+        <div class="card-list" id="mainContent"></div>
+        
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+    
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="exportTitle">Export Data</div>
+            </div>
+            <div id="exportContent"></div>
+            <div class="export-area" id="exportArea"></div>
+            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-primary" onclick="copyData()" style="flex: 1; min-width: 100px;">Copy</button>
+                <button class="btn-success" onclick="downloadCSV()" style="flex: 1; min-width: 100px;">Download CSV</button>
+                <button class="btn-secondary" onclick="closeModal()" style="flex: 1; min-width: 100px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // System Data Structure
+        let systemData = JSON.parse(localStorage.getItem('attendance_system_v3') || JSON.stringify({
+            adminPin: '1234',
+            instructors: [],
+            subjects: {},
+            batches: {},
+            students: {},
+            attendance: {}
+        }));
+        
+        let currentUser = null;
+        let currentState = {
+            instructor: null,
+            subject: null,
+            batch: null,
+            date: new Date().toISOString().split('T')[0],
+            reportFrom: null,
+            reportTo: null
+        };
+        
+        // Initialize
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+        });
+        
+        // Set default report dates
+        const today = new Date().toISOString().split('T')[0];
+        const lastMonth = new Date(Date.now() - 30*24*60*60*1000).toISOString().split('T')[0];
+        currentState.reportFrom = lastMonth;
+        currentState.reportTo = today;
+        
+        function saveSystemData() {
+            localStorage.setItem('attendance_system_v3', JSON.stringify(systemData));
+        }
+        
+        // ==================== LOGIN SYSTEM ====================
+        
+        function showAdminLogin() {
+            document.getElementById('adminPinSection').style.display = 'block';
+            document.getElementById('instructorSelectSection').style.display = 'none';
+            document.getElementById('adminPin').focus();
+        }
+        
+        function showInstructorLogin() {
+            const select = document.getElementById('instructorSelect');
+            select.innerHTML = '<option value="">Select Instructor</option>';
+            systemData.instructors.forEach(inst => {
+                select.innerHTML += `<option value="${inst.id}">${inst.name}</option>`;
+            });
+            document.getElementById('instructorSelectSection').style.display = 'block';
+            document.getElementById('adminPinSection').style.display = 'none';
+        }
+        
+        function loginAdmin() {
+            const pin = document.getElementById('adminPin').value;
+            if (pin === systemData.adminPin) {
+                currentUser = { type: 'admin' };
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('userBadge').textContent = '👨‍💼 Admin';
+                showAdminDashboard();
+            } else {
+                alert('Invalid PIN! Try 1234');
+            }
+        }
+        
+        function loginInstructor() {
+            const instId = document.getElementById('instructorSelect').value;
+            const pin = document.getElementById('instructorPin').value;
+            
+            if (!instId) { alert('Select instructor'); return; }
+            
+            const instructor = systemData.instructors.find(i => i.id === instId);
+            if (!instructor) { alert('Instructor not found'); return; }
+            
+            if (pin !== instructor.pin) { alert('Invalid PIN'); return; }
+            
+            currentUser = { type: 'instructor', id: instId, name: instructor.name };
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userBadge').textContent = `👨‍🏫 ${instructor.name}`;
+            
+            currentState.instructor = instId;
+            showInstructorSubjects();
+        }
+        
+        function logout() {
+            currentUser = null;
+            currentState = { 
+                instructor: null, subject: null, batch: null, 
+                date: new Date().toISOString().split('T')[0],
+                reportFrom: lastMonth, reportTo: today
+            };
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('adminPin').value = '';
+            document.getElementById('instructorPin').value = '';
+            document.getElementById('adminPinSection').style.display = 'none';
+            document.getElementById('instructorSelectSection').style.display = 'none';
+        }
+        
+        // ==================== ADMIN DASHBOARD ====================
+        
+        function showAdminDashboard() {
+            document.getElementById('pageTitle').textContent = '👨‍💼 Admin Dashboard';
+            document.getElementById('breadcrumb').innerHTML = '<span>Dashboard</span>';
+            document.getElementById('statsBar').style.display = 'none';
+            document.getElementById('legend').style.display = 'none';
+            
+            document.getElementById('controls').innerHTML = `
+                <div class="admin-grid">
+                    <div class="admin-card" onclick="showAdminInstructors()">
+                        <div class="admin-card-icon">👨‍🏫</div>
+                        <div class="admin-card-title">Manage Instructors</div>
+                        <div class="admin-card-desc">Add, edit, or remove instructors</div>
+                    </div>
+                    <div class="admin-card" onclick="showBulkImport()">
+                        <div class="admin-card-icon">📥</div>
+                        <div class="admin-card-title">Bulk Import</div>
+                        <div class="admin-card-desc">Import students/instructors via CSV</div>
+                    </div>
+                    <div class="admin-card" onclick="showAdminReports()">
+                        <div class="admin-card-icon">📊</div>
+                        <div class="admin-card-title">View All Reports</div>
+                        <div class="admin-card-desc">Date range reports & analytics</div>
+                    </div>
+                    <div class="admin-card" onclick="showSystemSettings()">
+                        <div class="admin-card-icon">⚙️</div>
+                        <div class="admin-card-title">System Settings</div>
+                        <div class="admin-card-desc">Change PINs and backup data</div>
+                    </div>
+                </div>
+            `;
+            
+            const totalStudents = Object.values(systemData.students).reduce((a, b) => a + b.length, 0);
+            
+            document.getElementById('mainContent').innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 15px; color: #2d3748;">📈 System Overview</h3>
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-value">${systemData.instructors.length}</div>
+                            <div class="summary-label">Instructors</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-value">${Object.keys(systemData.subjects).length}</div>
+                            <div class="summary-label">Subjects</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-value">${Object.keys(systemData.batches).length}</div>
+                            <div class="summary-label">Batches</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-value">${totalStudents}</div>
+                            <div class="summary-label">Students</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ==================== INSTRUCTOR MANAGEMENT ====================
+        
+        function showAdminInstructors() {
+            document.getElementById('pageTitle').textContent = '👨‍🏫 Manage Instructors';
+            document.getElementById('breadcrumb').innerHTML = '<span onclick="showAdminDashboard()" style="cursor:pointer;color:#667eea;">Dashboard</span> <span>›</span> <span>Instructors</span>';
+            document.getElementById('statsBar').style.display = 'none';
+            document.getElementById('legend').style.display = 'none';
+            
+            document.getElementById('controls').innerHTML = `
+                <button class="back-btn" onclick="showAdminDashboard()">← Back to Dashboard</button>
+                <div class="input-group">
+                    <input type="text" id="instName" placeholder="Instructor Name" onkeypress="if(event.key==='Enter')addInstructor()">
+                    <input type="password" id="instPin" placeholder="PIN (4 digits)" maxlength="4" style="width: 120px;">
+                    <button class="btn-primary" onclick="addInstructor()">Add Instructor</button>
+                </div>
+            `;
+            
+            renderInstructorList();
+        }
+        
+        function renderInstructorList() {
+            const list = document.getElementById('mainContent');
+            if (systemData.instructors.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 10px;">👨‍🏫</div>
+                        <div>No instructors added yet</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = systemData.instructors.map(inst => `
+                <div class="card-item" onclick="viewInstructorDetail('${inst.id}')">
+                    <div class="card-icon instructor-icon">👨‍🏫</div>
+                    <div class="card-info">
+                        <div class="card-title">${escapeHtml(inst.name)}</div>
+                        <div class="card-subtitle">${(systemData.subjects[inst.id] || []).length} subjects • PIN: ${inst.pin}</div>
+                    </div>
+                    <button class="share-btn" onclick="event.stopPropagation(); generateInstructorLink('${inst.id}')">🔗 Share</button>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteInstructor('${inst.id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+        
+        function addInstructor() {
+            const nameInput = document.getElementById('instName');
+            const pinInput = document.getElementById('instPin');
+            const name = nameInput.value.trim();
+            const pin = pinInput.value.trim();
+            
+            if (!name || pin.length !== 4) {
+                alert('Enter name and 4-digit PIN');
+                return;
+            }
+            
+            const id = 'inst_' + Date.now();
+            systemData.instructors.push({ id, name, pin });
+            systemData.subjects[id] = [];
+            saveSystemData();
+            
+            nameInput.value = '';
+            pinInput.value = '';
+            renderInstructorList();
+        }
+        
+        function deleteInstructor(id) {
+            if (!confirm('Delete this instructor and ALL their data?')) return;
+            
+            systemData.instructors = systemData.instructors.filter(i => i.id !== id);
+            delete systemData.subjects[id];
+            
+            Object.keys(systemData.batches).forEach(key => {
+                if (key.startsWith(id)) {
+                    delete systemData.students[key];
+                    delete systemData.batches[key];
+                }
+            });
+            
+            saveSystemData();
+            renderInstructorList();
+        }
+        
+        function generateInstructorLink(instId) {
+            const instructor = systemData.instructors.find(i => i.id === instId);
+            const baseUrl = window.location.href.split('?')[0];
+            const shareUrl = `${baseUrl}?instructor=${instId}`;
+            
+            const modal = document.getElementById('exportModal');
+            document.getElementById('exportTitle').textContent = `🔗 Share Access for ${instructor.name}`;
+            document.getElementById('exportContent').innerHTML = `
+                <p style="margin-bottom: 10px;">Share this link with <strong>${instructor.name}</strong>:</p>
+                <div class="share-url">${shareUrl}</div>
+                <p style="font-size: 13px; color: #718096; margin-top: 10px;">
+                    📱 They can bookmark this link for direct access<br>
+                    🔒 PIN required: <strong>${instructor.pin}</strong>
+                </p>
+            `;
+            document.getElementById('exportArea').style.display = 'none';
+            modal.classList.add('active');
+        }
+        
+        // ==================== BULK IMPORT ====================
+        
+        function showBulkImport() {
+            document.getElementById('pageTitle').textContent = '📥 Bulk Import';
+            document.getElementById('breadcrumb').innerHTML = '<span onclick="showAdminDashboard()" style="cursor:pointer;color:#667eea;">Dashboard</span> <span>›</span> <span>Import</span>';
+            
+            document.getElementById('controls').innerHTML = `
+                <button class="back-btn" onclick="showAdminDashboard()">← Back to Dashboard</button>
+                <div class="tabs">
+                    <button class="tab active" onclick="showImportTab('instructors')">Instructors</button>
+                    <button class="tab" onclick="showImportTab('students')">Students</button>
+                </div>
+            `;
+            
+            showImportTab('instructors');
+        }
+        
+        function showImportTab(type) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const content = document.getElementById('mainContent');
+            
+            if (type === 'instructors') {
+                content.innerHTML = `
+                    <div class="import-section">
+                        <h3 style="margin-bottom: 10px;">📋 Import Instructors</h3>
+                        <p style="font-size: 14px; color: #718096; margin-bottom: 15px;">
+                            Format: Name, PIN (4 digits)<br>
+                            One per line<br>
+                            Example:<br>
+                            <code>John Doe,1234<br>Jane Smith,5678</code>
+                        </p>
+                        <textarea id="importInstructors" placeholder="John Doe,1234&#10;Jane Smith,5678"></textarea>
+                        <button class="btn-success" onclick="processInstructorImport()" style="margin-top: 10px; width: 100%;">
+                            Import Instructors
+                        </button>
+                    </div>
+                `;
+            } else {
+                let instOptions = '<option value="">Select Instructor</option>';
+                systemData.instructors.forEach(i => {
+                    instOptions += `<option value="${i.id}">${i.name}</option>`;
+                });
+                
+                content.innerHTML = `
+                    <div class="import-section">
+                        <h3 style="margin-bottom: 10px;">🎓 Import Students</h3>
+                        <p style="font-size: 14px; color: #718096; margin-bottom: 15px;">
+                            Format: Student Name, Student ID (optional)<br>
+                            One per line<br>
+                            Example:<br>
+                            <code>Alice Johnson, STD001<br>Bob Smith, STD002</code>
+                        </p>
+                        
+                        <select id="importInst" onchange="updateImportSubjects()" style="margin-bottom: 10px;">
+                            ${instOptions}
+                        </select>
+                        <select id="importSub" onchange="updateImportBatches()" style="margin-bottom: 10px;">
+                            <option value="">Select Subject</option>
+                        </select>
+                        <select id="importBatch" style="margin-bottom: 10px;">
+                            <option value="">Select Batch</option>
+                        </select>
+                        
+                        <textarea id="importStudents" placeholder="Alice Johnson, STD001&#10;Bob Smith, STD002"></textarea>
+                        <button class="btn-success" onclick="processStudentImport()" style="margin-top: 10px; width: 100%;">
+                            Import Students
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function updateImportSubjects() {
+            const instId = document.getElementById('importInst').value;
+            const subSelect = document.getElementById('importSub');
+            subSelect.innerHTML = '<option value="">Select Subject</option>';
+            
+            if (!instId || !systemData.subjects[instId]) return;
+            
+            systemData.subjects[instId].forEach(sub => {
+                subSelect.innerHTML += `<option value="${sub.id}">${sub.name}</option>`;
+            });
+        }
+        
+        function updateImportBatches() {
+            const subId = document.getElementById('importSub').value;
+            const batchSelect = document.getElementById('importBatch');
+            batchSelect.innerHTML = '<option value="">Select Batch</option>';
+            
+            if (!subId || !systemData.batches[subId]) return;
+            
+            systemData.batches[subId].forEach(batch => {
+                batchSelect.innerHTML += `<option value="${batch.id}">${batch.name}</option>`;
+            });
+        }
+        
+        function processInstructorImport() {
+            const text = document.getElementById('importInstructors').value.trim();
+            if (!text) return;
+            
+            const lines = text.split('\n');
+            let count = 0;
+            
+            lines.forEach(line => {
+                const parts = line.split(',').map(p => p.trim());
+                if (parts.length >= 2) {
+                    const name = parts[0];
+                    const pin = parts[1];
+                    if (name && pin.length === 4) {
+                        const id = 'inst_' + Date.now() + '_' + count;
+                        systemData.instructors.push({ id, name, pin });
+                        systemData.subjects[id] = [];
+                        count++;
+                    }
+                }
+            });
+            
+            saveSystemData();
+            alert(`Imported ${count} instructors!`);
+            showBulkImport();
+        }
+        
+        function processStudentImport() {
+            const batchId = document.getElementById('importBatch').value;
+            if (!batchId) { alert('Select batch first'); return; }
+            
+            const text = document.getElementById('importStudents').value.trim();
+            if (!text) return;
+            
+            const lines = text.split('\n');
+            let count = 0;
+            
+            if (!systemData.students[batchId]) systemData.students[batchId] = [];
+            
+            lines.forEach(line => {
+                const parts = line.split(',').map(p => p.trim());
+                const name = parts[0];
+                const studentId = parts[1] || '-';
+                
+                if (name) {
+                    const id = batchId + '_stud_' + Date.now() + '_' + count;
+                    systemData.students[batchId].push({ id, name, studentId });
+                    count++;
+                }
+            });
+            
+            saveSystemData();
+            alert(`Imported ${count} students!`);
+            document.getElementById('importStudents').value = '';
+        }
+        
+        // ==================== ENHANCED REPORTS WITH DATE RANGE ====================
+        
+        function showAdminReports() {
+            document.getElementById('pageTitle').textContent = '📊 Attendance Reports';
+            document.getElementById('breadcrumb').innerHTML = '<span onclick="showAdminDashboard()" style="cursor:pointer;color:#667eea;">Dashboard</span> <span>›</span> <span>Reports</span>';
+            
+            const today = new Date().toISOString().split('T')[0];
+            const lastMonth = new Date(Date.now() - 30*24*60*60*1000).toISOString().split('T')[0];
+            
+            document.getElementById('controls').innerHTML = `
+                <button class="back-btn" onclick="showAdminDashboard()">← Back to Dashboard</button>
+                
+                <div style="background: #f7fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <div class="input-group">
+                        <select id="reportInst" onchange="updateReportView()">
+                            <option value="">All Instructors</option>
+                            ${systemData.instructors.map(i => `<option value="${i.id}">${i.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <div style="flex: 1;">
+                            <label style="font-size: 12px; color: #718096; display: block; margin-bottom: 5px;">From Date</label>
+                            <input type="date" id="reportFrom" onchange="updateReportView()" value="${lastMonth}">
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 12px; color: #718096; display: block; margin-bottom: 5px;">To Date</label>
+                            <input type="date" id="reportTo" onchange="updateReportView()" value="${today}">
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-success" onclick="exportDateRangeReport()">📥 Export Range Report</button>
+                        <button class="btn-info" onclick="showConsolidatedReport()">📈 Consolidated View</button>
+                    </div>
+                </div>
+            `;
+            
+            updateReportView();
+        }
+        
+        function updateReportView() {
+            const instId = document.getElementById('reportInst').value;
+            const fromDate = document.getElementById('reportFrom').value;
+            const toDate = document.getElementById('reportTo').value;
+            
+            currentState.reportFrom = fromDate;
+            currentState.reportTo = toDate;
+            
+            const list = document.getElementById('mainContent');
+            
+            let summaryHtml = '';
+            const instructors = instId ? 
+                systemData.instructors.filter(i => i.id === instId) : 
+                systemData.instructors;
+            
+            let totalPresent = 0, totalAbsent = 0, totalLate = 0, totalStudents = 0;
+            
+            instructors.forEach(inst => {
+                const subjects = systemData.subjects[inst.id] || [];
+                subjects.forEach(sub => {
+                    const batches = systemData.batches[sub.id] || [];
+                    batches.forEach(batch => {
+                        const students = systemData.students[batch.id] || [];
+                        totalStudents += students.length;
+                        
+                        Object.keys(systemData.attendance).forEach(date => {
+                            if (date >= fromDate && date <= toDate) {
+                                const key = `${inst.id}_${sub.id}_${batch.id}`;
+                                const dayData = systemData.attendance[date][key] || {};
+                                Object.values(dayData).forEach(status => {
+                                    if (status === 'present') totalPresent++;
+                                    else if (status === 'absent') totalAbsent++;
+                                    else if (status === 'late') totalLate++;
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+            
+            const totalMarked = totalPresent + totalAbsent + totalLate;
+            const avgAttendance = totalMarked > 0 ? Math.round((totalPresent + (totalLate * 0.5)) / totalMarked * 100) : 0;
+            
+            summaryHtml = `
+                <div class="date-range-display">
+                    📅 ${formatDate(fromDate)} to ${formatDate(toDate)} 
+                    <span style="opacity: 0.8; margin-left: 10px;">(${calculateDaysDiff(fromDate, toDate)} days)</span>
+                </div>
+                <div class="summary-cards" style="margin-bottom: 20px;">
+                    <div class="summary-card">
+                        <div class="summary-value" style="color: #48bb78;">${totalPresent}</div>
+                        <div class="summary-label">Present</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" style="color: #f56565;">${totalAbsent}</div>
+                        <div class="summary-label">Absent</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" style="color: #ed8936;">${totalLate}</div>
+                        <div class="summary-label">Late</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" style="color: #667eea;">${avgAttendance}%</div>
+                        <div class="summary-label">Avg Attendance</div>
+                    </div>
+                </div>
+            `;
+            
+            let detailHtml = '';
+            instructors.forEach(inst => {
+                detailHtml += `<div class="section-title">${inst.name}</div>`;
+                const subjects = systemData.subjects[inst.id] || [];
+                
+                if (subjects.length === 0) {
+                    detailHtml += '<div style="padding: 15px; color: #a0aec0;">No subjects</div>';
+                } else {
+                    subjects.forEach(sub => {
+                        const batches = systemData.batches[sub.id] || [];
+                        batches.forEach(batch => {
+                            const students = systemData.students[batch.id] || [];
+                            
+                            let batchPresent = 0, batchAbsent = 0, batchLate = 0, batchDays = 0;
+                            Object.keys(systemData.attendance).forEach(date => {
+                                if (date >= fromDate && date <= toDate) {
+                                    const key = `${inst.id}_${sub.id}_${batch.id}`;
+                                    const dayData = systemData.attendance[date][key] || {};
+                                    const dayStats = Object.values(dayData);
+                                    if (dayStats.length > 0) {
+                                        batchDays++;
+                                        dayStats.forEach(status => {
+                                            if (status === 'present') batchPresent++;
+                                            else if (status === 'absent') batchAbsent++;
+                                            else if (status === 'late') batchLate++;
+                                        });
+                                    }
+                                }
+                            });
+                            
+                            detailHtml += `
+                                <div class="card-item" onclick="viewBatchDetailReport('${inst.id}', '${sub.id}', '${batch.id}', '${fromDate}', '${toDate}')">
+                                    <div class="card-icon batch-icon">👥</div>
+                                    <div class="card-info">
+                                        <div class="card-title">${sub.name} - ${batch.name}</div>
+                                        <div class="card-subtitle">
+                                            ${students.length} students • ${batchDays} days recorded<br>
+                                            <span style="color: #48bb78;">P: ${batchPresent}</span> • 
+                                            <span style="color: #f56565;">A: ${batchAbsent}</span> • 
+                                            <span style="color: #ed8936;">L: ${batchLate}</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-arrow">›</div>
+                                </div>
+                            `;
+                        });
+                    });
+                }
+            });
+            
+            list.innerHTML = summaryHtml + detailHtml || summaryHtml + '<div class="empty-state">No data in selected range</div>';
+        }
+        
+        function viewBatchDetailReport(instId, subId, batchId, from, to) {
+            currentState.instructor = instId;
+            currentState.subject = subId;
+            currentState.batch = batchId;
+            
+            const inst = systemData.instructors.find(i => i.id === instId);
+            const sub = systemData.subjects[instId].find(s => s.id === subId);
+            const batch = systemData.batches[subId].find(b => b.id === batchId);
+            const students = systemData.students[batchId] || [];
+            
+            let html = `
+                <div class="date-range-display">
+                    📅 ${formatDate(from)} to ${formatDate(to)}<br>
+                    <small>${inst.name} • ${sub.name} • ${batch.name}</small>
+                </div>
+                <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            `;
+            
+            const dates = Object.keys(systemData.attendance)
+                .filter(d => d >= from && d <= to)
+                .sort();
+            
+            if (dates.length === 0) {
+                html += '<div class="empty-state">No attendance records in this period</div>';
+            } else {
+                html += `
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #f7fafc;">
+                                    <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; position: sticky; left: 0; background: #f7fafc; z-index: 10;">Student</th>
+                                    ${dates.map(d => `<th style="padding: 12px 8px; text-align: center; border-bottom: 2px solid #e2e8f0; min-width: 40px;">${formatDateShort(d)}</th>`).join('')}
+                                    <th style="padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0;">%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                students.forEach(student => {
+                    let present = 0, late = 0, total = 0;
+                    
+                    html += `<tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding: 10px 12px; font-weight: 600; position: sticky; left: 0; background: white; z-index: 10;">
+                            ${escapeHtml(student.name)}<br>
+                            <small style="color: #a0aec0; font-weight: normal;">${student.studentId}</small>
+                        </td>
+                    `;
+                    
+                    dates.forEach(date => {
+                        const key = `${instId}_${subId}_${batchId}`;
+                        const status = systemData.attendance[date][key]?.[student.id] || '-';
+                        
+                        let color = '#cbd5e0';
+                        let symbol = '○';
+                        if (status === 'present') { color = '#48bb78'; symbol = '✓'; present++; total++; }
+                        else if (status === 'absent') { color = '#f56565'; symbol = '✕'; total++; }
+                        else if (status === 'late') { color = '#ed8936'; symbol = 'L'; late++; total++; }
+                        
+                        html += `<td style="padding: 10px 8px; text-align: center; color: ${color}; font-weight: bold;">${symbol}</td>`;
+                    });
+                    
+                    const percent = total > 0 ? Math.round(((present + (late * 0.5)) / total) * 100) : 0;
+                    const pClass = percent >= 80 ? '#48bb78' : percent >= 60 ? '#ed8936' : '#f56565';
+                    
+                    html += `<td style="padding: 10px; text-align: center; font-weight: bold; color: ${pClass};">${percent}%</td></tr>`;
+                });
+                
+                html += '</tbody></table></div>';
+            }
+            
+            html += '</div>';
+            html += `
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn-success" onclick="exportBatchDateRange('${from}', '${to}')" style="flex: 1;">📥 Export This Report</button>
+                    <button class="btn-secondary" onclick="showAdminReports()" style="flex: 1;">← Back</button>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = html;
+        }
+        
+        function exportDateRangeReport() {
+            const from = document.getElementById('reportFrom').value;
+            const to = document.getElementById('reportTo').value;
+            const instId = document.getElementById('reportInst').value;
+            
+            let csv = `ATTENDANCE REPORT\nDate Range: ${from} to ${to}\nGenerated: ${new Date().toLocaleString()}\n\n`;
+            
+            const instructors = instId ? 
+                systemData.instructors.filter(i => i.id === instId) : 
+                systemData.instructors;
+            
+            instructors.forEach(inst => {
+                csv += `INSTRUCTOR: ${inst.name}\n`;
+                const subjects = systemData.subjects[inst.id] || [];
+                
+                subjects.forEach(sub => {
+                    csv += `  SUBJECT: ${sub.name}\n`;
+                    const batches = systemData.batches[sub.id] || [];
+                    
+                    batches.forEach(batch => {
+                        csv += `    BATCH: ${batch.name}\n`;
+                        const students = systemData.students[batch.id] || [];
+                        
+                        const dates = Object.keys(systemData.attendance)
+                            .filter(d => d >= from && d <= to)
+                            .sort();
+                        
+                        csv += 'Student Name,Student ID';
+                        dates.forEach(d => csv += `,${d}`);
+                        csv += ',Total Days,Present,Late,Absent,Percentage\n';
+                        
+                        students.forEach(student => {
+                            csv += `"${student.name}","${student.studentId}"`;
+                            let present = 0, late = 0, absent = 0;
+                            
+                            dates.forEach(date => {
+                                const key = `${inst.id}_${sub.id}_${batch.id}`;
+                                const status = systemData.attendance[date][key]?.[student.id] || '';
+                                csv += `,${status}`;
+                                if (status === 'present') present++;
+                                else if (status === 'late') late++;
+                                else if (status === 'absent') absent++;
+                            });
+                            
+                            const total = present + late + absent;
+                            const percent = total > 0 ? Math.round(((present + (late * 0.5)) / total) * 100) : 0;
+                            csv += `,${total},${present},${late},${absent},${percent}%\n`;
+                        });
+                        csv += '\n';
+                    });
+                });
+                csv += '\n';
+            });
+            
+            document.getElementById('exportTitle').textContent = '📊 Date Range Report';
+            document.getElementById('exportContent').innerHTML = `<p>Report from <strong>${from}</strong> to <strong>${to}</strong></p>`;
+            document.getElementById('exportArea').style.display = 'block';
+            document.getElementById('exportArea').textContent = csv;
+            document.getElementById('exportModal').classList.add('active');
+        }
+        
+        function showConsolidatedReport() {
+            const from = document.getElementById('reportFrom').value;
+            const to = document.getElementById('reportTo').value;
+            
+            let totalStudents = 0;
+            let studentStats = [];
+            
+            systemData.instructors.forEach(inst => {
+                const subjects = systemData.subjects[inst.id] || [];
+                subjects.forEach(sub => {
+                    const batches = systemData.batches[sub.id] || [];
+                    batches.forEach(batch => {
+                        const students = systemData.students[batch.id] || [];
+                        students.forEach(student => {
+                            totalStudents++;
+                            let present = 0, late = 0, total = 0;
+                            
+                            Object.keys(systemData.attendance).forEach(date => {
+                                if (date >= from && date <= to) {
+                                    const key = `${inst.id}_${sub.id}_${batch.id}`;
+                                    const status = systemData.attendance[date][key]?.[student.id];
+                                    if (status) {
+                                        total++;
+                                        if (status === 'present') present++;
+                                        else if (status === 'late') late++;
+                                    }
+                                }
+                            });
+                            
+                            const percent = total > 0 ? Math.round(((present + (late * 0.5)) / total) * 100) : 0;
+                            studentStats.push({
+                                name: student.name,
+                                id: student.studentId,
+                                inst: inst.name,
+                                sub: sub.name,
+                                batch: batch.name,
+                                percent: percent,
+                                total: total,
+                                present: present,
+                                late: late
+                            });
+                        });
+                    });
+                });
+            });
+            
+            studentStats.sort((a, b) => a.percent - b.percent);
+            
+            let html = `
+                <div class="date-range-display">
+                    📊 Consolidated Performance Report<br>
+                    <small>${formatDate(from)} to ${formatDate(to)}</small>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #2d3748;">⚠️ Students Below 60% Attendance</h3>
+            `;
+            
+            const atRisk = studentStats.filter(s => s.percent < 60);
+            if (atRisk.length === 0) {
+                html += '<p style="color: #48bb78; text-align: center;">✓ No students at risk!</p>';
+            } else {
+                html += '<div style="display: grid; gap: 10px;">';
+                atRisk.forEach(s => {
+                    html += `
+                        <div style="background: #fed7d7; padding: 15px; border-radius: 8px; border-left: 4px solid #f56565;">
+                            <div style="font-weight: bold; color: #742a2a;">${escapeHtml(s.name)} (${s.percent}%)</div>
+                            <div style="font-size: 13px; color: #c53030;">
+                                ${s.inst} • ${s.sub} • ${s.batch}<br>
+                                Present: ${s.present} | Late: ${s.late} | Total Days: ${s.total}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            html += `
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px;">
+                    <h3 style="margin-bottom: 15px; color: #2d3748;">🏆 Top Performers (>90%)</h3>
+            `;
+            
+            const topPerformers = studentStats.filter(s => s.percent >= 90).sort((a, b) => b.percent - a.percent);
+            if (topPerformers.length === 0) {
+                html += '<p style="color: #718096; text-align: center;">No top performers in this range</p>';
+            } else {
+                html += '<div style="display: grid; gap: 10px;">';
+                topPerformers.slice(0, 10).forEach(s => {
+                    html += `
+                        <div style="background: #c6f6d5; padding: 15px; border-radius: 8px; border-left: 4px solid #48bb78;">
+                            <div style="font-weight: bold; color: #22543d;">${escapeHtml(s.name)} (${s.percent}%)</div>
+                            <div style="font-size: 13px; color: #276749;">
+                                ${s.inst} • ${s.sub} • ${s.batch}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            html += `
+                </div>
+                <button class="btn-secondary" onclick="showAdminReports()" style="width: 100%; margin-top: 20px;">← Back to Reports</button>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = html;
+        }
+        
+        function exportBatchDateRange(from, to) {
+            const inst = systemData.instructors.find(i => i.id === currentState.instructor);
+            const sub = systemData.subjects[currentState.instructor].find(s => s.id === currentState.subject);
+            const batch = systemData.batches[currentState.subject].find(b => b.id === currentState.batch);
+            const students = systemData.students[currentState.batch] || [];
+            
+            const dates = Object.keys(systemData.attendance)
+                .filter(d => d >= from && d <= to)
+                .sort();
+            
+            let csv = `Batch Report: ${inst.name} - ${sub.name} - ${batch.name}\n`;
+            csv += `Period: ${from} to ${to}\n\n`;
+            csv += 'Student Name,Student ID';
+            dates.forEach(d => csv += `,${d}`);
+            csv += ',Total,Present,Late,Absent,Percentage\n';
+            
+            students.forEach(student => {
+                csv += `"${student.name}","${student.studentId}"`;
+                let present = 0, late = 0, absent = 0;
+                
+                dates.forEach(date => {
+                    const key = `${currentState.instructor}_${currentState.subject}_${currentState.batch}`;
+                    const status = systemData.attendance[date][key]?.[student.id] || '';
+                    csv += `,${status}`;
+                    if (status === 'present') present++;
+                    else if (status === 'late') late++;
+                    else if (status === 'absent') absent++;
+                });
+                
+                const total = present + late + absent;
+                const percent = total > 0 ? Math.round(((present + (late * 0.5)) / total) * 100) : 0;
+                csv += `,${total},${present},${late},${absent},${percent}%\n`;
+            });
+            
+            document.getElementById('exportTitle').textContent = '📤 Batch Detailed Report';
+            document.getElementById('exportContent').innerHTML = '';
+            document.getElementById('exportArea').style.display = 'block';
+            document.getElementById('exportArea').textContent = csv;
+            document.getElementById('exportModal').classList.add('active');
+        }
+        
+        // ==================== INSTRUCTOR VIEW ====================
+        
+        function showInstructorSubjects() {
+            document.getElementById('pageTitle').textContent = '📖 My Subjects';
+            document.getElementById('breadcrumb').innerHTML = '<span>Select Subject</span>';
+            document.getElementById('statsBar').style.display = 'none';
+            document.getElementById('legend').style.display = 'none';
+            
+            document.getElementById('controls').innerHTML = `
+                <div class="input-group">
+                    <input type="text" id="subjectName" placeholder="New Subject Name" onkeypress="if(event.key==='Enter')addSubject()">
+                    <button class="btn-primary" onclick="addSubject()">Add Subject</button>
+                </div>
+            `;
+            
+            const subjects = systemData.subjects[currentState.instructor] || [];
+            const list = document.getElementById('mainContent');
+            
+            if (subjects.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📖</div>
+                        <div>No subjects yet</div>
+                        <div style="font-size: 14px; margin-top: 5px;">Add your first subject above</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = subjects.map(sub => `
+                <div class="card-item" onclick="selectSubject('${sub.id}')">
+                    <div class="card-icon subject-icon">📖</div>
+                    <div class="card-info">
+                        <div class="card-title">${escapeHtml(sub.name)}</div>
+                        <div class="card-subtitle">${(systemData.batches[sub.id] || []).length} batches</div>
+                    </div>
+                    <div class="card-arrow">›</div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteSubject('${sub.id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+        
+        // ==================== SHARED FUNCTIONS ====================
+        
+        function addSubject() {
+            const input = document.getElementById('subjectName');
+            const name = input.value.trim();
+            if (!name) return;
+            
+            const id = currentState.instructor + '_sub_' + Date.now();
+            if (!systemData.subjects[currentState.instructor]) systemData.subjects[currentState.instructor] = [];
+            systemData.subjects[currentState.instructor].push({ id, name });
+            systemData.batches[id] = [];
+            saveSystemData();
+            input.value = '';
+            
+            if (currentUser.type === 'admin') {
+                viewInstructorDetail(currentState.instructor);
+            } else {
+                showInstructorSubjects();
+            }
+        }
+        
+        function deleteSubject(id) {
+            if (!confirm('Delete this subject and all batches?')) return;
+            
+            const instId = currentUser.type === 'admin' ? currentState.instructor : currentUser.id;
+            systemData.subjects[instId] = systemData.subjects[instId].filter(s => s.id !== id);
+            
+            delete systemData.batches[id];
+            Object.keys(systemData.students).forEach(key => {
+                if (key.startsWith(id)) delete systemData.students[key];
+            });
+            
+            saveSystemData();
+            
+            if (currentUser.type === 'admin') {
+                viewInstructorDetail(instId);
+            } else {
+                showInstructorSubjects();
+            }
+        }
+        
+        function selectSubject(id) {
+            currentState.subject = id;
+            showBatches();
+        }
+        
+        function showBatches() {
+            const isAdmin = currentUser.type === 'admin';
+            const instName = isAdmin ? 
+                systemData.instructors.find(i => i.id === currentState.instructor).name :
+                currentUser.name;
+            const subName = systemData.subjects[currentState.instructor].find(s => s.id === currentState.subject).name;
+            
+            document.getElementById('pageTitle').textContent = '👥 Batches';
+            document.getElementById('breadcrumb').innerHTML = isAdmin ? 
+                `<span onclick="showAdminInstructors()" style="cursor:pointer;color:#667eea;">Instructors</span> <span>›</span> <span onclick="viewInstructorDetail('${currentState.instructor}')" style="cursor:pointer;color:#667eea;">${instName}</span> <span>›</span> <span>${subName}</span>` :
+                `<span onclick="showInstructorSubjects()" style="cursor:pointer;color:#667eea;">Subjects</span> <span>›</span> <span>${subName}</span>`;
+            
+            document.getElementById('statsBar').style.display = 'none';
+            document.getElementById('legend').style.display = 'none';
+            
+            document.getElementById('controls').innerHTML = `
+                <button class="back-btn" onclick="${isAdmin ? 'viewInstructorDetail(currentState.instructor)' : 'showInstructorSubjects()'}">← Back</button>
+                <div class="input-group">
+                    <input type="text" id="batchName" placeholder="Batch Name (e.g., Morning A)" onkeypress="if(event.key==='Enter')addBatch()">
+                    <button class="btn-primary" onclick="addBatch()">Add Batch</button>
+                </div>
+            `;
+            
+            const batches = systemData.batches[currentState.subject] || [];
+            const list = document.getElementById('mainContent');
+            
+            if (batches.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 10px;">👥</div>
+                        <div>No batches created</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = batches.map(batch => `
+                <div class="card-item" onclick="selectBatch('${batch.id}')">
+                    <div class="card-icon batch-icon">👥</div>
+                    <div class="card-info">
+                        <div class="card-title">${escapeHtml(batch.name)}</div>
+                        <div class="card-subtitle">${(systemData.students[batch.id] || []).length} students</div>
+                    </div>
+                    <div class="card-arrow">›</div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteBatch('${batch.id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+        
+        function addBatch() {
+            const input = document.getElementById('batchName');
+            const name = input.value.trim();
+            if (!name) return;
+            
+            const id = currentState.subject + '_batch_' + Date.now();
+            if (!systemData.batches[currentState.subject]) systemData.batches[currentState.subject] = [];
+            systemData.batches[currentState.subject].push({ id, name });
+            systemData.students[id] = [];
+            saveSystemData();
+            input.value = '';
+            showBatches();
+        }
+        
+        function deleteBatch(id) {
+            if (!confirm('Delete this batch and all students?')) return;
+            systemData.batches[currentState.subject] = systemData.batches[currentState.subject].filter(b => b.id !== id);
+            delete systemData.students[id];
+            saveSystemData();
+            showBatches();
+        }
+        
+        function selectBatch(id) {
+            currentState.batch = id;
+            showStudents();
+        }
+        
+        // ==================== STUDENT MANAGEMENT WITH DELETE ====================
+        
+        function showStudents() {
+            const isAdmin = currentUser.type === 'admin';
+            const inst = systemData.instructors.find(i => i.id === currentState.instructor);
+            const sub = systemData.subjects[currentState.instructor].find(s => s.id === currentState.subject);
+            const batch = systemData.batches[currentState.subject].find(b => b.id === currentState.batch);
+            
+            document.getElementById('pageTitle').textContent = '🎓 Attendance';
+            document.getElementById('breadcrumb').innerHTML = isAdmin ?
+                `<span onclick="showAdminInstructors()" style="cursor:pointer;color:#667eea;">Instructors</span> <span>›</span> <span onclick="viewInstructorDetail('${currentState.instructor}')" style="cursor:pointer;color:#667eea;">${inst.name}</span> <span>›</span> <span onclick="showBatches()">${sub.name}</span> <span>›</span> <span>${batch.name}</span>` :
+                `<span onclick="showInstructorSubjects()" style="cursor:pointer;color:#667eea;">Subjects</span> <span>›</span> <span onclick="showBatches()">${sub.name}</span> <span>›</span> <span>${batch.name}</span>`;
+            
+            document.getElementById('statsBar').style.display = 'flex';
+            document.getElementById('legend').style.display = 'flex';
+            
+            document.getElementById('controls').innerHTML = `
+                <button class="back-btn" onclick="showBatches()">← Back to Batches</button>
+                <div class="input-group">
+                    <input type="text" id="studentName" placeholder="Student Name" onkeypress="if(event.key==='Enter')addStudent()">
+                    <input type="text" id="studentId" placeholder="ID" style="width: 100px;" onkeypress="if(event.key==='Enter')addStudent()">
+                    <button class="btn-primary" onclick="addStudent()">Add Student</button>
+                </div>
+                <div class="input-group">
+                    <input type="date" id="datePicker" value="${currentState.date}" onchange="changeDate()">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-success" onclick="markAll('present')">✓ All Present</button>
+                    <button class="btn-info" onclick="exportBatchData()">📤 Export</button>
+                    <button class="btn-danger" onclick="clearToday()">🗑️ Clear</button>
+                </div>
+            `;
+            
+            const students = systemData.students[currentState.batch] || [];
+            const list = document.getElementById('mainContent');
+            
+            if (students.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 10px;">🎓</div>
+                        <div>No students in this batch</div>
+                        <div style="font-size: 14px; margin-top: 5px;">Add students to start taking attendance</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const todayAttendance = getTodayAttendance();
+            
+            list.innerHTML = students.map(student => {
+                const status = todayAttendance[student.id] || null;
+                const stats = calculateStudentPercentage(student.id);
+                const pClass = getPercentageClass(stats.percent);
+                
+                return `
+                    <div class="student-item" id="student-${student.id}">
+                        <div class="card-icon student-icon" style="margin-right: 12px;">🎓</div>
+                        <div class="student-info">
+                            <div class="student-name-row">
+                                <div class="student-name">${escapeHtml(student.name)}</div>
+                                <div class="percentage-badge percentage-${pClass}">${stats.percent}%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-${pClass}" style="width: ${stats.percent}%"></div>
+                            </div>
+                            <div class="student-meta">
+                                <div class="student-id">ID: ${escapeHtml(student.studentId)}</div>
+                                <div class="attendance-count">P:${stats.present} L:${stats.late} A:${stats.absent} T:${stats.total}</div>
+                            </div>
+                        </div>
+                        <div class="status-buttons">
+                            <button class="status-btn present ${status === 'present' ? 'active' : ''}" onclick="setStatus('${student.id}', 'present')" title="Present">✓</button>
+                            <button class="status-btn absent ${status === 'absent' ? 'active' : ''}" onclick="setStatus('${student.id}', 'absent')" title="Absent">✕</button>
+                            <button class="status-btn late ${status === 'late' ? 'active' : ''}" onclick="setStatus('${student.id}', 'late')" title="Late">⏰</button>
+                        </div>
+                        <button class="delete-student-btn" onclick="deleteStudent('${student.id}')" title="Remove Student">🗑️</button>
+                    </div>
+                `;
+            }).join('');
+            
+            updateStats();
+        }
+        
+        function addStudent() {
+            const nameInput = document.getElementById('studentName');
+            const idInput = document.getElementById('studentId');
+            const name = nameInput.value.trim();
+            if (!name) return;
+            
+            const id = currentState.batch + '_stud_' + Date.now();
+            if (!systemData.students[currentState.batch]) systemData.students[currentState.batch] = [];
+            systemData.students[currentState.batch].push({
+                id, name, studentId: idInput.value.trim() || '-'
+            });
+            saveSystemData();
+            nameInput.value = '';
+            idInput.value = '';
+            nameInput.focus();
+            showStudents();
+        }
+        
+        // ==================== DELETE STUDENT FUNCTION ====================
+        
+        function deleteStudent(studentId) {
+            if (!confirm('Are you sure you want to remove this student?\n\nAll attendance history for this student will be deleted.')) {
+                return;
+            }
+            
+            // Remove from students array
+            systemData.students[currentState.batch] = systemData.students[currentState.batch].filter(s => s.id !== studentId);
+            
+            // Remove attendance records for this student across all dates
+            const key = `${currentState.instructor}_${currentState.subject}_${currentState.batch}`;
+            Object.keys(systemData.attendance).forEach(date => {
+                if (systemData.attendance[date][key] && systemData.attendance[date][key][studentId]) {
+                    delete systemData.attendance[date][key][studentId];
+                }
+            });
+            
+            saveSystemData();
+            
+            // Animate removal
+            const element = document.getElementById(`student-${studentId}`);
+            if (element) {
+                element.style.transition = 'all 0.3s ease';
+                element.style.opacity = '0';
+                element.style.transform = 'translateX(-100%)';
+                setTimeout(() => showStudents(), 300);
+            } else {
+                showStudents();
+            }
+        }
+        
+        function setStatus(studentId, status) {
+            const today = getTodayAttendance();
+            today[studentId] = status;
+            saveSystemData();
+            showStudents();
+        }
+        
+        function markAll(status) {
+            if (!confirm(`Mark all students as ${status}?`)) return;
+            const today = getTodayAttendance();
+            const students = systemData.students[currentState.batch] || [];
+            students.forEach(s => today[s.id] = status);
+            saveSystemData();
+            showStudents();
+        }
+        
+        function changeDate() {
+            currentState.date = document.getElementById('datePicker').value;
+            showStudents();
+        }
+        
+        function clearToday() {
+            if (!confirm('Clear all attendance for today?')) return;
+            const key = `${currentState.instructor}_${currentState.subject}_${currentState.batch}`;
+            if (systemData.attendance[currentState.date] && systemData.attendance[currentState.date][key]) {
+                delete systemData.attendance[currentState.date][key];
+                saveSystemData();
+                showStudents();
+            }
+        }
+        
+        function updateStats() {
+            const today = getTodayAttendance();
+            let present = 0, absent = 0, late = 0;
+            Object.values(today).forEach(status => {
+                if (status === 'present') present++;
+                else if (status === 'absent') absent++;
+                else if (status === 'late') late++;
+            });
+            document.getElementById('countPresent').textContent = present;
+            document.getElementById('countAbsent').textContent = absent;
+            document.getElementById('countLate').textContent = late;
+            document.getElementById('countTotal').textContent = (systemData.students[currentState.batch] || []).length;
+        }
+        
+        function getTodayAttendance() {
+            const key = `${currentState.instructor}_${currentState.subject}_${currentState.batch}`;
+            if (!systemData.attendance[currentState.date]) systemData.attendance[currentState.date] = {};
+            if (!systemData.attendance[currentState.date][key]) systemData.attendance[currentState.date][key] = {};
+            return systemData.attendance[currentState.date][key];
+        }
+        
+        function calculateStudentPercentage(studentId) {
+            const key = `${currentState.instructor}_${currentState.subject}_${currentState.batch}`;
+            let total = 0, present = 0, late = 0;
+            
+            Object.keys(systemData.attendance).forEach(date => {
+                if (systemData.attendance[date][key] && systemData.attendance[date][key][studentId]) {
+                    total++;
+                    const status = systemData.attendance[date][key][studentId];
+                    if (status === 'present') present++;
+                    else if (status === 'late') late++;
+                }
+            });
+            
+            if (total === 0) return { percent: 0, total: 0, present: 0, late: 0, absent: 0 };
+            
+            const score = present + (late * 0.5);
+            return {
+                percent: Math.round((score / total) * 100),
+                total, present, late,
+                absent: total - present - late
+            };
+        }
+        
+        function getPercentageClass(percent) {
+            if (percent >= 80) return 'high';
+            if (percent >= 60) return 'medium';
+            return 'low';
+        }
+        
+        function exportBatchData() {
+            const students = systemData.students[currentState.batch] || [];
+            const inst = systemData.instructors.find(i => i.id === currentState.instructor);
+            const sub = systemData.subjects[currentState.instructor].find(s => s.id === currentState.subject);
+            const batch = systemData.batches[currentState.subject].find(b => b.id === currentState.batch);
+            
+            let csv = `Report: ${inst.name} - ${sub.name} - ${batch.name}\n`;
+            csv += `Date: ${currentState.date}\n\n`;
+            csv += 'Name,ID,Total,Present,Late,Absent,%,Today\n';
+            
+            students.forEach(s => {
+                const stats = calculateStudentPercentage(s.id);
+                const today = getTodayAttendance()[s.id] || 'Not Marked';
+                csv += `"${s.name}","${s.studentId}",${stats.total},${stats.present},${stats.late},${stats.absent},${stats.percent}%,${today}\n`;
+            });
+            
+            document.getElementById('exportTitle').textContent = '📤 Export Batch Data';
+            document.getElementById('exportContent').innerHTML = '';
+            document.getElementById('exportArea').style.display = 'block';
+            document.getElementById('exportArea').textContent = csv;
+            document.getElementById('exportModal').classList.add('active');
+        }
+        
+        // ==================== UTILITIES ====================
+        
+        function viewInstructorDetail(id) {
+            currentState.instructor = id;
+            const inst = systemData.instructors.find(i => i.id === id);
+            
+            document.getElementById('pageTitle').textContent = inst.name;
+            document.getElementById('breadcrumb').innerHTML = `<span onclick="showAdminInstructors()" style="cursor:pointer;color:#667eea;">Instructors</span> <span>›</span> <span>${inst.name}</span>`;
+            
+            document.getElementById('controls').innerHTML = `
+                <button class="back-btn" onclick="showAdminInstructors()">← Back</button>
+                <div class="input-group">
+                    <input type="text" id="subjectName" placeholder="New Subject" onkeypress="if(event.key==='Enter')addSubject()">
+                    <button class="btn-primary" onclick="addSubject()">Add Subject</button>
+                </div>
+                <div class="share-box">
+                    <strong>🔗 Quick Share Link</strong>
+                    <div class="share-url">${window.location.href.split('?')[0]}?instructor=${id}</div>
+                    <small>Share this with ${inst.name} for direct access</small>
+                </div>
+            `;
+            
+            const subjects = systemData.subjects[id] || [];
+            document.getElementById('mainContent').innerHTML = subjects.length === 0 ? 
+                '<div class="empty-state"><div style="font-size: 48px;">📖</div><div>No subjects</div></div>' :
+                subjects.map(sub => `
+                    <div class="card-item" onclick="selectSubject('${sub.id}')">
+                        <div class="card-icon subject-icon">📖</div>
+                        <div class="card-info">
+                            <div class="card-title">${escapeHtml(sub.name)}</div>
+                            <div class="card-subtitle">${(systemData.batches[sub.id] || []).length} batches</div>
+                        </div>
+                        <div class="card-arrow">›</div>
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteSubject('${sub.id}')">Delete</button>
+                    </div>
+                `).join('');
+        }
+        
+        function showSystemSettings() {
+            document.getElementById('pageTitle').textContent = '⚙️ System Settings';
+            document.getElementById('breadcrumb').innerHTML = '<span onclick="showAdminDashboard()" style="cursor:pointer;color:#667eea;">Dashboard</span> <span>›</span> <span>Settings</span>';
+            
+            document.getElementById('controls').innerHTML = `
+                <button class="back-btn" onclick="showAdminDashboard()">← Back to Dashboard</button>
+                <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                    <h3 style="margin-bottom: 15px;">Change Admin PIN</h3>
+                    <div class="input-group">
+                        <input type="password" id="newAdminPin" placeholder="New 4-digit PIN" maxlength="4">
+                        <button class="btn-primary" onclick="changeAdminPin()">Update</button>
+                    </div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px;">
+                    <h3 style="margin-bottom: 15px;">💾 Data Backup</h3>
+                    <button class="btn-success" onclick="backupData()" style="width: 100%; margin-bottom: 10px;">Download Backup</button>
+                    <input type="file" id="restoreFile" accept=".json" onchange="restoreData()" style="display: none;">
+                    <button class="btn-warning" onclick="document.getElementById('restoreFile').click()" style="width: 100%;">Restore from Backup</button>
+                </div>
+            `;
+            
+            document.getElementById('mainContent').innerHTML = '';
+        }
+        
+        function changeAdminPin() {
+            const pin = document.getElementById('newAdminPin').value;
+            if (pin.length !== 4) { alert('Enter 4 digits'); return; }
+            systemData.adminPin = pin;
+            saveSystemData();
+            alert('Admin PIN updated!');
+        }
+        
+        function backupData() {
+            const dataStr = JSON.stringify(systemData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `attendance_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+        
+        function restoreData() {
+            const file = document.getElementById('restoreFile').files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (confirm('This will replace all current data. Continue?')) {
+                        systemData = data;
+                        saveSystemData();
+                        alert('Data restored! Reloading...');
+                        location.reload();
+                    }
+                } catch (err) {
+                    alert('Invalid backup file');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function copyData() {
+            const text = document.getElementById('exportArea').textContent;
+            navigator.clipboard.writeText(text).then(() => alert('Copied!'));
+        }
+        
+        function downloadCSV() {
+            const text = document.getElementById('exportArea').textContent;
+            const blob = new Blob([text], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `report_${currentState.date}.csv`;
+            a.click();
+        }
+        
+        function closeModal() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        
+        function formatDateShort(dateStr) {
+            const d = new Date(dateStr);
+            return `${d.getMonth() + 1}/${d.getDate()}`;
+        }
+        
+        function calculateDaysDiff(from, to) {
+            const d1 = new Date(from);
+            const d2 = new Date(to);
+            return Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+        }
+        
+        // Check for shared link
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const instId = params.get('instructor');
+            if (instId && systemData.instructors.find(i => i.id === instId)) {
+                document.getElementById('instructorSelect').value = instId;
+                showInstructorLogin();
+            }
+        };
+    </script>
+</body>
+</html>
