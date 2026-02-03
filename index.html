@@ -681,7 +681,7 @@
         <p style="color: #718096; margin-bottom: 30px;">Select your role to continue</p>
         
         <button class="login-btn login-admin" onclick="showAdminLogin()">
-            👨‍💼 TM
+            👨‍💼 Training Manager
         </button>
         
         <div id="adminPinSection" style="display: none;">
@@ -834,7 +834,7 @@
                 currentUser = { type: 'admin' };
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
-                document.getElementById('userBadge').textContent = '👨‍💼 Admin';
+                document.getElementById('userBadge').textContent = '👨‍💼 Traning Manager';
                 showAdminDashboard();
             } else {
                 alert('Invalid PIN! Try 1234');
@@ -879,7 +879,7 @@
         // ==================== ADMIN DASHBOARD ====================
         
         function showAdminDashboard() {
-            document.getElementById('pageTitle').textContent = '👨‍💼 Admin Dashboard';
+            document.getElementById('pageTitle').textContent = '👨‍💼 Training Manager';
             document.getElementById('breadcrumb').innerHTML = '<span>Dashboard</span>';
             document.getElementById('statsBar').style.display = 'none';
             document.getElementById('legend').style.display = 'none';
@@ -2198,5 +2198,6 @@
 </body>
 
 </html>
+
 
 
